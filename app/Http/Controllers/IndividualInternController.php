@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\IndividualInternRequest;
-use App\Models\IndividualIntern;
 use Illuminate\Http\Request;
+use App\Models\IndividualIntern;
+use App\Http\Requests\UpdateIndividualInternRequest;
+use App\Http\Requests\StoreIndividualInternRequest;
 
 class IndividualInternController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return IndividualIntern::all();
     }
@@ -19,7 +20,7 @@ class IndividualInternController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(IndividualInternRequest $request)
+    public function store(StoreIndividualInternRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class IndividualInternController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(IndividualInternRequest $request, IndividualIntern $individualIntern)
+    public function update(UpdateIndividualInternRequest $request, IndividualIntern $individualIntern)
     {
         //
     }

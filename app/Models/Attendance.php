@@ -52,7 +52,10 @@ class Attendance extends Model
     public function scopeFilterByDate(Builder $query, $value)
     {
         $query->whereHas('date', function ($query) use ($value) {
-            $query->where('day', 'like', '%' . $value . '%');
+            $query->where('date', 'like', '%' . $value . '%')
+                ->orwhere('day', 'like', '%' . $value . '%')
+                ->orWhere('month', 'like', '%' . $value . '%')
+                ->orWhere('year', 'like', '%' . $value . '%');
         });
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreAttendanceRequest;
+use App\Http\Resources\AttendanceCollection;
 
 class AttendanceController extends Controller
 {
@@ -18,15 +20,15 @@ class AttendanceController extends Controller
                 ->selfFilter($search)->orWhere
                 ->filterByAttendanceable($search)
                 ->orWhere->filterByDate($search)
-                ->get();
+                ->latest()->paginate();
             
             if ($attendances->count() == 0) {
                 return response()->json([
                     'message' => 'Data Not Found',
-                ], 200);
+                ], 404);
             }
     
-            return response()->json($attendances, 200);
+            return new AttendanceCollection($attendances);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Internal Server Error',
@@ -38,7 +40,7 @@ class AttendanceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAttendanceRequest $request)
     {
         //
     }
@@ -54,7 +56,7 @@ class AttendanceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Attendance $attendance)
+    public function update(StoreAttendanceRequest $request, Attendance $attendance)
     {
         //
     }

@@ -15,7 +15,7 @@ class UserController extends Controller
     public function createToken($user)
     {
         if ($user->username == 'admin') {
-            $token = $user->createToken('admin-token')->plainTextToken;
+            $token = $user->createToken('admin-token', ['*'])->plainTextToken;
         } else {
             $token = $user->createToken('user-token', ['document:*', 'group:*'])->plainTextToken;
         }
