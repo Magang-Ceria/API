@@ -10,6 +10,27 @@
   </p>
 </div>
 
+## Getting Started
+
+Ikuti langkah-langkah dibawah untuk memulai instalasi dan pengembangan projek
+
+### Git Clone
+ ```sh
+  git clone https://github.com/Magang-Ceria/Front-End.git
+  ```
+### Installing modules
+Ketikkan perintah dibawah ini melalui terminal dari direktori folder yang sudah di git clone
+ ```sh
+  npm i
+  ```
+
+### Running Projects
+Menggunakan perintah dibawah ini unutk menjalankan program
+ ```sh
+  npm start
+  ```
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
