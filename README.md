@@ -11,9 +11,6 @@
 </div>
 
 
-## Laravel
-[Documentation](https://laravel.com/docs)
-
 ## Getting Started
 Ikuti langkah-langkah dibawah untuk memulai instalasi dan pengembangan API
 
@@ -43,3 +40,6 @@ Jalankan perintah dibawah ini unutk menjalankan server
 
 ### API Documentation
 Coming Soon
+
+## Laravel
+[Documentation](https://laravel.com/docs)
