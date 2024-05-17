@@ -14,7 +14,7 @@ class Group extends Model
     protected $table = "groups";
     protected $primaryKey = "id";
     protected $guarded = ["id"];
-    protected $with = ['groupIntern'];
+    // protected $with = ['groupIntern', 'document'];
 
     public function document(): MorphOne
     {

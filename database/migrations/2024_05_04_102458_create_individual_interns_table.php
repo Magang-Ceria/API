@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('individual_interns', function (Blueprint $table) {
             $table->id();
             $table->string('address', 255);
-            $table->string('institution')->nullable();
+            $table->string('institution', 100)->nullable();
             $table->date('startperiode');
             $table->date('endperiode');
             $table->string('status')->default('pending');
-            $table->unsignedBigInteger('user_id')->nullable(false);
+            $table->unsignedBigInteger('user_id')->unique()->nullable(false);
             $table->foreign("user_id")->on("user")->references("id");
             $table->timestamps();
         });

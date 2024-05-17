@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreAttendanceRequest;
+use App\Models\IndividualIntern;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\AttendanceCollection;
+use App\Http\Requests\StoreAttendanceRequest;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class AttendanceController extends Controller
 {
@@ -15,19 +19,34 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         try {
+            $user = $request->user();
+
+            if (!$user->tokenCan('*')) {
+                return response()->json([
+                    "message" => "This action is not allowed",
+                ], 403);
+            }
+
             $search = $request->query('search') ?? null;
-            $attendances = Attendance::with(['attendanceable', 'date'])
-                ->selfFilter($search)->orWhere
+            $attendances = Attendance::with([
+                'attendanceable' => function (MorphTo $morphTo) {
+                    $morphTo->morphWith([
+                        IndividualIntern::class => ['user:id,name'],
+                        Group::class => ['groupIntern:id,name,group_id']
+                    ]);
+                }, 'date'
+            ])->selfFilter($search)->orWhere
                 ->filterByAttendanceable($search)
                 ->orWhere->filterByDate($search)
-                ->latest()->paginate();
-            
+                ->latest()
+                ->paginate();
+
             if ($attendances->count() == 0) {
                 return response()->json([
                     'message' => 'Data Not Found',
                 ], 404);
             }
-    
+
             return new AttendanceCollection($attendances);
         } catch (\Throwable $th) {
             return response()->json([

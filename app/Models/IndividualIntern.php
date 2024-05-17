@@ -14,7 +14,6 @@ class IndividualIntern extends Model
     protected $table = "individual_interns";
     protected $primaryKey = "id";
     protected $guarded = ["id"];
-    protected $with = ['user'];
 
     public function document(): MorphOne
     {

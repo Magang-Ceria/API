@@ -21,8 +21,10 @@ class AttendanceResource extends JsonResource
             'afternoontime' => $this->afternoontime,
             'afternoonstatus' => $this->afternoonstatus,
             'proof' => $this->proof,
+            'attendanceable_type' => $this->attendanceable_type,
+            'attendanceable_id' => $this->attendanceable_id,
             'date' => new DateResource($this->whenLoaded('date')),
-            'interns' => $this->attendanceable,
+            'interns' => $this->whenLoaded('attendanceable'),
         ];
     }
 }

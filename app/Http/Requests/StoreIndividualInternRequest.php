@@ -11,7 +11,9 @@ class StoreIndividualInternRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        $user = $this->user();
+
+        return $user !=null && $user->tokenCan('aplicant:create');
     }
 
     /**
@@ -22,7 +24,10 @@ class StoreIndividualInternRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'address' => ['required', 'max:255'],
+            'institution' => ['nullable', 'max:100'],
+            'startperiode' => ['required', 'date_format:Y-m-d'],
+            'endperiode' => ['required', 'date_format:Y-m-d'],
         ];
     }
 }

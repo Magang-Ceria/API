@@ -25,37 +25,40 @@ class Attendance extends Model
         return $this->belongsTo(Date::class);
     }
 
-    public function scopeSelfFilter(Builder $query, $value)
+    // public function scopeIncludeRelation
+
+    public function scopeSelfFilter(Builder $query, $search)
     {
-        $query->where('morningstatus', $value)
-            ->orWhere('afternoonstatus', $value);
+        $query->where('morningstatus', $search)
+            ->orWhere('afternoonstatus', $search);
     }
 
-    public function scopeFilterByAttendanceable(Builder $query, $value)
+    public function scopeFilterByAttendanceable(Builder $query, $search)
     {
         $query->whereHasMorph(
             'attendanceable',
             [IndividualIntern::class, Group::class],
-            function (Builder $query, string $type) use ($value) {
+            function (Builder $q1, string $type) use ($search) {
                 $related = $type === IndividualIntern::class ? 'user' : 'groupIntern';
 
                 $nestedRelationName = $related == 'groupIntern' ? 'group_interns' : 'user';
 
-                $query->where('institution', 'like', '%' . $value . '%')
-                    ->orWhereHas($related, function ($q) use ($nestedRelationName, $value) {
-                        $q->where($nestedRelationName . '.name', 'like', '%' . $value . '%');
+                $q1->where('institution', 'like', '%' . $search . '%')
+                    ->orWhereHas($related, function ($q2) use ($nestedRelationName, $search) {
+                        $q2->where($nestedRelationName . '.name', 'like', '%' . $search . '%');
                     });
             }
         );
     }
 
-    public function scopeFilterByDate(Builder $query, $value)
+    public function scopeFilterByDate(Builder $q1, $search)
     {
-        $query->whereHas('date', function ($query) use ($value) {
-            $query->where('date', 'like', '%' . $value . '%')
-                ->orwhere('day', 'like', '%' . $value . '%')
-                ->orWhere('month', 'like', '%' . $value . '%')
-                ->orWhere('year', 'like', '%' . $value . '%');
-        });
+        $q1
+            ->whereHas('date', function ($q2) use ($search) {
+                $q2->where('date', 'like', '%' . $search . '%')
+                    ->orWhere('day', 'like', '%' . $search . '%')
+                    ->orWhere('month', 'like', '%' . $search . '%')
+                    ->orWhere('year', 'like', '%' . $search . '%');
+            });
     }
 }

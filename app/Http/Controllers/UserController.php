@@ -17,7 +17,7 @@ class UserController extends Controller
         if ($user->username == 'admin') {
             $token = $user->createToken('admin-token', ['*'])->plainTextToken;
         } else {
-            $token = $user->createToken('user-token', ['document:*', 'group:*'])->plainTextToken;
+            $token = $user->createToken('user-token', ['aplicant:create', 'document:*', 'group:*'])->plainTextToken;
         }
 
         return $token;
@@ -52,7 +52,7 @@ class UserController extends Controller
         $data = $request->validated();
 
         $user = User::where('username', $data['username'])->first();
-
+        
         if (!$user || !Hash::check($data['password'], $user->password)) {
             throw new HttpResponseException(response([
                 "errors" => [
