@@ -14,9 +14,17 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login'])->name('login');
 
-Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
-    Route::get('/dashboard/interns', [InternsController::class, 'getActiveInterns']);
-    Route::apiResource('/attendance', AttendanceController::class);
-    Route::apiResource('/intern', IndividualInternController::class);
-    // Route::apiResource('/dashboard/attendance', []);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('/individualIntern', IndividualInternController::class)->only('index');
+
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard/interns', [InternsController::class, 'getActiveInterns']);
+        Route::apiResource('/attendance', AttendanceController::class);
+        Route::apiResource('/individualIntern', IndividualInternController::class)->only('update', 'destroy');
+    });
+    
+    Route::prefix('user')->group(function () {
+        Route::apiResource('/attendance', AttendanceController::class);
+        Route::apiResource('/application/individualIntern', IndividualInternController::class)->only('store');
+    });
 });

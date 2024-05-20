@@ -21,8 +21,10 @@ class IndividualInternResource extends JsonResource
             'startperiode' => $this->startperiode,
             'endperiode' => $this->endperiode,
             'status' => $this->status,
-            'user' => new UserResource($this->whenLoaded('user')),
-            'document' => DocumentResource::collection($this->whenLoaded('document'))
+            'user_id' => $this->user_id,
+            'user' => $this->whenLoaded('user'),
+            'attendance' => $this->whenLoaded('attendance'),
+            'document' => $this->whenLoaded('document')
         ];
     }
 }

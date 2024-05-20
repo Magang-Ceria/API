@@ -11,7 +11,8 @@ class UpdateIndividualInternRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        $user = $this->user();
+        return $user != null;
     }
 
     /**
@@ -21,8 +22,14 @@ class UpdateIndividualInternRequest extends FormRequest
      */
     public function rules(): array
     {
+        $method = $this->method();
+        $exist = $method == 'PUT' ? '' : 'sometimes';
         return [
-            //
+            'address' => [$exist, 'required', 'max:255'],
+            'institution' => [$exist, 'nullable', 'max:100'],
+            'startperiode' => [$exist, 'required', 'date_format:Y-m-d'],
+            'endperiode' => [$exist, 'required', 'date_format:Y-m-d', 'after:startperiode'],
+            'document' => [$exist, 'required', 'file', 'mimetypes:application/pdf', 'max:2000']
         ];
     }
 }

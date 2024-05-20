@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phonenumber' => $this->phonenumber,
-            'Intern' => $this->whenNotNull($this->individualIntern) ?? $this->whenNotNull($this->groupIntern)
+            'Intern' => $this->group ? $this->group->id : $this->individualIntern->id,
         ];
     }
 }

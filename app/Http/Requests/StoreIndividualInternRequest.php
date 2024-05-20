@@ -27,7 +27,8 @@ class StoreIndividualInternRequest extends FormRequest
             'address' => ['required', 'max:255'],
             'institution' => ['nullable', 'max:100'],
             'startperiode' => ['required', 'date_format:Y-m-d'],
-            'endperiode' => ['required', 'date_format:Y-m-d'],
+            'endperiode' => ['required', 'date_format:Y-m-d', 'after:startperiode'],
+            'document' => ['required', 'file', 'mimetypes:application/pdf', 'extension:pdf', 'size:2000'],
         ];
     }
 }

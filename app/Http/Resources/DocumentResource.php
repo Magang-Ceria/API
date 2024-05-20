@@ -15,8 +15,8 @@ class DocumentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'registrationLetter' => $this->registrationletter,
-            'acceptanceLetter' => $this->acceptanceletter,
+            'registrationLetter' => $this->whenNotNull($this->registrationletter),
+            'acceptanceLetter' => $this->whenNotNull($this->acceptanceletter),
             'intern' => $this->whenLoaded('documentable')
         ];
     }

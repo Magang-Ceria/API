@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->string('registrationletter');
-            $table->string('accepatanceletter')->nullable();
+            $table->string('acceptanceletter')->nullable();
             $table->morphs('documentable');
             $table->timestamps();
         });

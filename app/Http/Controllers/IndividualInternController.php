@@ -11,6 +11,8 @@ use App\Http\Resources\IndividualInternResource;
 use App\Http\Resources\IndividualInternCollection;
 use App\Http\Requests\StoreIndividualInternRequest;
 use App\Http\Requests\UpdateIndividualInternRequest;
+use App\Http\Resources\DocumentResource;
+use App\Models\Document;
 
 class IndividualInternController extends Controller
 {
@@ -27,9 +29,9 @@ class IndividualInternController extends Controller
                     "message" => "This action is not allowed",
                 ], 403);
             }
-            
+
             $search = $request->query('search') ?? null;
-    
+
             $datas = IndividualIntern::where('status', 'active')
                 ->orWhere('institution', 'like', '%' . $search . '%')
                 ->orWhere('startperiode', 'like', '%' . $search . '%')
@@ -38,13 +40,13 @@ class IndividualInternController extends Controller
                     $query->where('name', 'like', '%' . $search . '%');
                 })
                 ->paginate();
-    
+
             if ($datas->count() == 0) {
                 return response()->json([
                     'message' => 'Data Not Found'
                 ], 404);
             }
-    
+
             return new IndividualInternCollection($datas);
         } catch (\Throwable $th) {
             return response()->json([
@@ -63,6 +65,8 @@ class IndividualInternController extends Controller
             $data = $request->validated();
 
             $data['status'] = 'pending';
+
+            unset($data['document']);
 
             $file = $request->file('document');
 
@@ -90,7 +94,11 @@ class IndividualInternController extends Controller
      */
     public function show(IndividualIntern $individualIntern)
     {
-        // return
+        return new IndividualInternResource($individualIntern->load(
+            'user:id,name,email,phonenumber',
+            'attendance:morningtime,morningstatus,afternoontime,afternoonstatus,attendanceable_id',
+            'document:registrationletter,acceptanceletter,documentable_id'
+        ));
     }
 
     /**
@@ -98,7 +106,37 @@ class IndividualInternController extends Controller
      */
     public function update(UpdateIndividualInternRequest $request, IndividualIntern $individualIntern)
     {
-        //
+        // admin: update status and document
+        // user: update information
+
+        ## check 
+
+        // is admin token?
+        // true
+        //  can update just status and individualIntern->document->acceptanse letter
+        // false 
+        //  can update all data except:
+        //      status and IndividualIntern->document->acceptanceletter
+
+        $file = $request->file('document');
+        $updateData = $request->validated();
+
+        unset($updateData['document']);
+
+        if ($request->user()->tokenCan('*')) {
+            $document = new Document(['acceptancenletter' => $file]);
+            $acceptIntern = $individualIntern->document()->save($document);
+
+            return new DocumentResource($acceptIntern);
+        }
+
+        $updateRegistrationLetter = new Document(['registrationletter' => $file]);
+
+        $updateIntern = $individualIntern->update($updateData);
+
+        $updateInternDocument = $individualIntern->document()->save($updateRegistrationLetter);
+
+        return new IndividualInternResource($individualIntern);
     }
 
     /**
